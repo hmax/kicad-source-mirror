@@ -1667,7 +1667,7 @@ void SCH_IO_KICAD_SEXPR::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolLi
 
     const LIB_SYMBOL_MAP& symbols = m_cache->m_symbols;
 
-    for( LIB_SYMBOL_MAP::const_iterator it = symbols.begin();  it != symbols.end();  ++it )
+    for( LIB_SYMBOL_MAP::const_iterator it = symbols.cbegin();  it != symbols.cend();  ++it )
     {
         if( !powerSymbolsOnly || it->second->IsPower() )
             aSymbolList.push_back( it->second );

@@ -249,10 +249,12 @@ SCH_PIN& SCH_PIN::operator=( const SCH_PIN& aPin )
 
 VECTOR2I SCH_PIN::GetPosition() const
 {
-    if( const SCH_SYMBOL* symbol = dynamic_cast<const SCH_SYMBOL*>( GetParentSymbol() ) )
-        return symbol->GetTransform().TransformCoordinate( m_position ) + symbol->GetPosition();
-    else
+    auto* parentSymbol = GetParentSymbol();
+    if( parentSymbol->Type() != SCH_SYMBOL_T )
         return m_position;
+
+    const SCH_SYMBOL* symbol = reinterpret_cast<const SCH_SYMBOL*>( parentSymbol );
+    return symbol->GetTransform().TransformCoordinate( m_position ) + symbol->GetPosition();
 }
 
 PIN_ORIENTATION SCH_PIN::GetOrientation() const

@@ -434,7 +434,7 @@ int DSNLEXER::NeedNUMBER( const char* aExpectation )
  * Our whitespace, by our definition, is a subset of ASCII, i.e. no bytes with MSB on can be
  * considered whitespace, since they are likely part of a multibyte UTF8 character.
  */
-static bool isSpace( char cc )
+inline static bool isSpace( char cc )
 {
     // cc is signed, so it is often negative.
     // Treat negative as large positive to exclude rapidly.
@@ -531,6 +531,7 @@ int DSNLEXER::NextTok()
 {
     const char*   cur  = next;
     const char*   head = cur;
+    auto          size = ( head - cur ) * sizeof( *head );
 
     prevTok = curTok;
 
@@ -791,8 +792,11 @@ L_read:
     curText.clear();
 
     head = cur;
-    while( head<limit && !isSep( *head ) )
-        curText += *head++;
+    while( head < limit && !isSep( *head ) )
+        head++;
+
+    size = ( head - cur ) * sizeof( *head );
+    curText.append( cur, size );
 
     if( isNumber( curText.c_str(), curText.c_str() + curText.size() ) )
     {

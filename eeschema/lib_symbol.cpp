@@ -39,21 +39,21 @@
 
 std::vector<SEARCH_TERM> LIB_SYMBOL::GetSearchTerms()
 {
-    std::vector<SEARCH_TERM> terms;
-
-    terms.emplace_back( SEARCH_TERM( GetName(), 8 ) );
-
-    wxStringTokenizer keywordTokenizer( GetKeyWords(), wxS( " " ), wxTOKEN_STRTOK );
-
-    while( keywordTokenizer.HasMoreTokens() )
-        terms.emplace_back( SEARCH_TERM( keywordTokenizer.GetNextToken(), 4 ) );
-
+    wxStringTokenizer        keywordTokenizer( GetKeyWords(), wxS( " " ), wxTOKEN_STRTOK );
     // TODO(JE) rework this later so we can highlight matches in their column
     std::map<wxString, wxString> fields;
     GetChooserFields( fields );
 
-    for( const auto& [ name, text ] : fields )
-        terms.emplace_back( SEARCH_TERM( text, 4 ) );
+    std::vector<SEARCH_TERM> terms;
+    terms.reserve( keywordTokenizer.CountTokens() + fields.size() + 4 );
+
+    terms.emplace_back( SEARCH_TERM( GetName(), 8 ) );
+
+    while( keywordTokenizer.HasMoreTokens() )
+        terms.emplace_back( SEARCH_TERM( keywordTokenizer.GetNextToken(), 4 ) );
+
+    for( auto& [ name, text ] : fields )
+        terms.emplace_back( SEARCH_TERM( std::move(text), 4 ) );
 
     // Also include keywords as one long string, just in case
     terms.emplace_back( SEARCH_TERM( GetKeyWords(), 1 ) );

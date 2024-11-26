@@ -71,7 +71,6 @@
 
 using namespace TSCHEMATIC_T;
 
-
 SCH_IO_KICAD_SEXPR_PARSER::SCH_IO_KICAD_SEXPR_PARSER( LINE_READER* aLineReader,
                                                       PROGRESS_REPORTER* aProgressReporter,
                                                       unsigned aLineCount, SCH_SHEET* aRootSheet,
@@ -1681,7 +1680,7 @@ SCH_PIN* SCH_IO_KICAD_SEXPR_PARSER::parseSymbolPin()
             token = NextTok();
             alt.m_Shape = parseShape( token );
 
-            pin->GetAlternates()[ alt.m_Name ] = alt;
+            pin->GetAlternates().insert_or_assign(alt.m_Name, std::move(alt));
 
             NeedRIGHT();
             break;

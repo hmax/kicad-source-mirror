@@ -52,6 +52,12 @@ struct KICOMMON_API SEARCH_TERM
             Normalized( false )
     {}
 
+    SEARCH_TERM( wxString&& aText, int aScore ) :
+            Text( std::move(aText) ), Score( aScore ), Normalized( false )
+    {
+    }
+
+
     wxString Text;
     int      Score;
     bool     Normalized;
